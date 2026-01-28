@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camp CCB - Shakers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&family=Noto+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#13ec5b",
+            "primary-dark": "#0fb846",
+            "background-light": "#f6f8f6",
+            "background-dark": "#102216",
+            "surface-light": "#ffffff",
+            "surface-dark": "#1a2e22",
+            "text-main": "#0d1b12",
+            "text-light": "#e7f3eb",
+          },
+          fontFamily: {
+            display: ["Plus Jakarta Sans", "sans-serif"],
+            body: ["Noto Sans", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Noto Sans', sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-background-light text-text-main antialiased selection:bg-primary selection:text-text-main">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-50 w-full bg-background-light/95 backdrop-blur-sm border-b border-[#e7f3eb]">
+    <div class="flex justify-center w-full">
+      <div class="px-4 md:px-10 lg:px-20 flex flex-1 justify-center w-full">
+        <div class="flex flex-col max-w-[960px] flex-1">
+          <div class="flex items-center justify-between whitespace-nowrap py-3">
+            <!-- Logo Area -->
+            <div class="flex items-center gap-4 text-text-main">
+              <div class="w-8 h-8 text-primary">
+                <svg class="w-full h-full" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M24 4L6 44H42L24 4Z" fill="currentColor" stroke="currentColor" stroke-width="4"></path>
+                  <path d="M24 16L14 38H34L24 16Z" fill="#f6f8f6"></path>
+                </svg>
+              </div>
+              <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Camp CCB</h2>
+            </div>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex flex-1 justify-end gap-8 items-center">
+              <nav class="flex items-center gap-9">
+                <a href="#about"
+                  class="text-sm font-medium leading-normal hover:text-primary transition-colors">Nosotros</a>
+                <a href="#gallery"
+                  class="text-sm font-medium leading-normal hover:text-primary transition-colors">Galería</a>
+                <a href="#location"
+                  class="text-sm font-medium leading-normal hover:text-primary transition-colors">Ubicación</a>
+                <a href="verificar-pago.html"
+                  class="text-sm font-medium leading-normal hover:text-primary transition-colors">Verificar Pago</a>
+              </nav>
+              <a href="registro.html"
+                class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-text-main text-sm font-bold leading-normal tracking-[0.015em] hover:brightness-110 transition-all">
+                <span class="truncate">Registrarse</span>
+              </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 text-text-main">
+              <!-- Icon will be inserted by JS -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-menu">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Mobile Menu -->
+          <div id="mobile-menu"
+            class="hidden md:hidden py-4 border-t border-gray-100 flex-col gap-4 items-center bg-background-light">
+            <a href="#about" class="text-sm font-medium hover:text-primary">Nosotros</a>
+            <a href="#gallery" class="text-sm font-medium hover:text-primary">Galería</a>
+            <a href="#location" class="text-sm font-medium hover:text-primary">Ubicación</a>
+            <a href="verificar-pago.html" class="text-sm font-medium hover:text-primary">Verificar Pago</a>
+            <a href="registro.html"
+              class="w-full max-w-xs rounded-lg h-10 bg-primary text-text-main font-bold text-sm flex items-center justify-center">
+              Registrarse
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 w-full">
+    <!-- HERO -->
+    <div class="flex flex-col w-full">
+      <div class="px-4 md:px-10 lg:px-20 flex flex-1 justify-center py-5">
+        <div class="flex flex-col max-w-[960px] flex-1">
+          <div class="p-0 md:p-4">
+            <div
+              class="relative flex min-h-[560px] flex-col gap-6 overflow-hidden rounded-xl items-center justify-center p-8 text-center bg-cover bg-center group"
+              style="background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 100%), url('https://lh3.googleusercontent.com/aida-public/AB6AXuAyPnAnlsVf5mdqj4HkpYLGR_4p2We2SixtVN5HguIGfp0ks0Z4F2uY3nwWJdtzbDr6CAuqo1FFTENcVZ6ZWn93TU6nL2_w2AOrvSoVHveTG9nHdVkIsDfT1yvlj2SqDaNLtpzkG6jaGtzF1XXslhBaaMYwIxUhGB8XtgIqowne2lanX-iFRDoH4XFwZKDWuhGo3cadIrIFpOiHoBr3APYdJ5FP78UqJEECdH_43UAPkAjXsJiJMq4m6Wdyx1ZXkF0ryoz_DIEj0geV')">
+              <div class="flex flex-col gap-4 max-w-2xl z-10 w-full items-center">
+                <img src="img/shakers_hero.jpg" alt="Camp CCB Shakers 2026"
+                  class="w-full max-w-md h-auto rounded-lg shadow-2xl border-2 border-white/20 hover:scale-105 transition-transform duration-500">
+              </div>
+              <a href="registro.html"
+                class="z-10 mt-4 flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-8 bg-primary text-text-main text-base font-bold leading-normal tracking-[0.015em] hover:scale-105 transition-transform duration-200 shadow-[0_0_20px_rgba(19,236,91,0.4)]">
+                <span class="truncate">Inscríbete Ahora</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="bg-background-light py-8">
+      <div class="px-4 md:px-10 lg:px-20 flex justify-center">
+        <div class="max-w-[960px] w-full flex flex-col items-center">
+          <h3 class="text-sm font-bold uppercase tracking-widest text-primary mb-6">La aventura comienza en</h3>
+          <div id="countdown-timer" class="flex flex-wrap justify-center gap-4 w-full md:w-auto">
+            <!-- Días -->
+            <div class="flex flex-col items-center gap-2 min-w-[80px]">
+              <div
+                class="flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-xl bg-surface-light shadow-sm border border-[#e7f3eb]">
+                <p class="text-3xl md:text-4xl font-black text-text-main" id="days">00</p>
+              </div>
+              <p class="text-sm font-medium text-gray-500">Días</p>
+            </div>
+            <div class="text-2xl font-bold text-gray-300 pt-6 hidden md:block">:</div>
+            <!-- Horas -->
+            <div class="flex flex-col items-center gap-2 min-w-[80px]">
+              <div
+                class="flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-xl bg-surface-light shadow-sm border border-[#e7f3eb]">
+                <p class="text-3xl md:text-4xl font-black text-text-main" id="hours">00</p>
+              </div>
+              <p class="text-sm font-medium text-gray-500">Horas</p>
+            </div>
+            <div class="text-2xl font-bold text-gray-300 pt-6 hidden md:block">:</div>
+            <!-- Minutos -->
+            <div class="flex flex-col items-center gap-2 min-w-[80px]">
+              <div
+                class="flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-xl bg-surface-light shadow-sm border border-[#e7f3eb]">
+                <p class="text-3xl md:text-4xl font-black text-text-main" id="minutes">00</p>
+              </div>
+              <p class="text-sm font-medium text-gray-500">Minutos</p>
+            </div>
+            <div class="text-2xl font-bold text-gray-300 pt-6 hidden md:block">:</div>
+            <!-- Segundos -->
+            <div class="flex flex-col items-center gap-2 min-w-[80px]">
+              <div
+                class="flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-xl bg-surface-light shadow-sm border border-[#e7f3eb]">
+                <p class="text-3xl md:text-4xl font-black text-text-main" id="seconds">00</p>
+              </div>
+              <p class="text-sm font-medium text-gray-500">Segundos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURES (NOSOTROS) -->
+    <div id="about" class="flex w-full justify-center">
+      <div class="px-4 md:px-10 lg:px-20 flex flex-1 justify-center py-10">
+        <div class="flex flex-col max-w-[960px] flex-1">
+          <div class="flex flex-col gap-10 py-10">
+            <div class="flex flex-col gap-4 text-center md:text-left">
+              <h1 class="text-text-main tracking-tight text-[32px] font-bold leading-tight md:text-4xl md:font-black">
+                ¿Por qué unirte a nosotros?
+              </h1>
+              <p class="text-gray-600 text-base font-normal leading-normal max-w-[720px]">
+                Vive una semana de crecimiento, diversión y nuevas amistades. Nuestro programa está diseñado para
+                formar carácter y crear recuerdos duraderos.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Feature 1 -->
+              <div
+                class="flex flex-col gap-4 rounded-xl border border-[#cfe7d7] bg-surface-light p-6 transition-all hover:shadow-md hover:-translate-y-1 duration-300">
+                <div class="w-12 h-12 rounded-full bg-[#e7f3eb] flex items-center justify-center text-primary">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-users">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <h2 class="text-text-main text-lg font-bold leading-tight">Amistad</h2>
+                  <p class="text-gray-600 text-sm leading-relaxed">
+                    Haz amigos para toda la vida en un ambiente de apoyo donde todos pertenecen.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Feature 2 -->
+              <div
+                class="flex flex-col gap-4 rounded-xl border border-[#cfe7d7] bg-surface-light p-6 transition-all hover:shadow-md hover:-translate-y-1 duration-300">
+                <div class="w-12 h-12 rounded-full bg-[#e7f3eb] flex items-center justify-center text-primary">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-trending-up">
+                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                    <polyline points="16 7 22 7 22 13" />
+                  </svg>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <h2 class="text-text-main text-lg font-bold leading-tight">Crecimiento</h2>
+                  <p class="text-gray-600 text-sm leading-relaxed">
+                    Desafíate a ti mismo con nuevas actividades, talleres de habilidades y roles de liderazgo.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Feature 3 -->
+              <div
+                class="flex flex-col gap-4 rounded-xl border border-[#cfe7d7] bg-surface-light p-6 transition-all hover:shadow-md hover:-translate-y-1 duration-300">
+                <div class="w-12 h-12 rounded-full bg-[#e7f3eb] flex items-center justify-center text-primary">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-smile">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                    <line x1="9" y1="9" x2="9.01" y2="9" />
+                    <line x1="15" y1="9" x2="15.01" y2="9" />
+                  </svg>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <h2 class="text-text-main text-lg font-bold leading-tight">Diversión</h2>
+                  <p class="text-gray-600 text-sm leading-relaxed">
+                    Recuerdos inolvidables, juegos nocturnos, fogatas y entretenimiento sin parar.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div id="gallery" class="flex w-full justify-center bg-white">
+      <div class="px-4 md:px-10 lg:px-20 flex flex-1 justify-center py-16">
+        <div class="flex flex-col max-w-[960px] flex-1">
+          <div class="flex flex-col gap-2 px-4 pb-8 text-center">
+            <h2 class="text-text-main text-3xl font-bold leading-tight tracking-[-0.015em]">
+              Experiencias del Campamento Anterior
+            </h2>
+            <p class="text-gray-600">¡Mira lo que hicimos el verano pasado!</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[150px] md:auto-rows-[200px]">
+            <!-- Large Item - Auditorio -->
+            <div
+              class="sm:col-span-2 sm:row-span-2 relative group overflow-hidden rounded-xl cursor-pointer min-h-[300px] sm:min-h-0">
+              <img src="img/gallery/auditorio.jpg" alt="Auditorio del campamento"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                <span class="text-white font-bold text-lg">Nuestro Auditorio</span>
+              </div>
+            </div>
+
+            <!-- Small Item - Oradora -->
+            <div class="relative group overflow-hidden rounded-xl">
+              <img src="img/gallery/oradora.jpg" alt="Oradora en el campamento"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+
+            <!-- Small Item - Predicador -->
+            <div class="relative group overflow-hidden rounded-xl">
+              <img src="img/gallery/predicador.jpg" alt="Predicador en el campamento"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+
+            <!-- Medium Item - Llegada -->
+            <div
+              class="sm:col-span-2 relative group overflow-hidden rounded-xl cursor-pointer min-h-[150px] sm:min-h-0">
+              <img src="img/gallery/llegada.jpg" alt="Llegada de participantes"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                <span class="text-white font-bold text-sm">¡Bienvenidos al Campamento!</span>
+              </div>
+            </div>
+
+            <!-- Small Item - Jovenes -->
+            <div class="relative group overflow-hidden rounded-xl">
+              <img src="img/gallery/jovenes.jpg" alt="Jóvenes en el campamento"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+
+            <!-- Small Item - Comida -->
+            <div class="relative group overflow-hidden rounded-xl">
+              <img src="img/gallery/comida.jpg" alt="Hora de la comida"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+
+            <!-- Small Item - Adoracion -->
+            <div class="relative group overflow-hidden rounded-xl">
+              <img src="img/gallery/adoracion.jpg" alt="Momento de adoración"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+
+            <!-- Small Item - Alabanza -->
+            <div class="relative group overflow-hidden rounded-xl">
+              <img src="img/gallery/alabanza.jpg" alt="Tiempo de alabanza"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+
+            <!-- Medium Item - Danza -->
+            <div
+              class="sm:col-span-2 relative group overflow-hidden rounded-xl cursor-pointer min-h-[150px] sm:min-h-0">
+              <img src="img/gallery/danza.jpg" alt="Presentación de danza"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                <span class="text-white font-bold text-sm">Ministerio de Danza</span>
+              </div>
+            </div>
+
+            <!-- Small Item - Participantes -->
+            <div class="relative group overflow-hidden rounded-xl">
+              <img src="img/gallery/participantes.jpg" alt="Participantes del campamento"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+
+            <!-- Small Item - Evento Nocturno -->
+            <div class="relative group overflow-hidden rounded-xl">
+              <img src="img/gallery/evento_nocturno.jpg" alt="Evento nocturno"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+
+            <!-- Small Item - Oracion -->
+            <div class="relative group overflow-hidden rounded-xl">
+              <img src="img/gallery/oracion.jpg" alt="Momento de oración"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+
+            <!-- Small Item - Equipo de Sonido -->
+            <div class="relative group overflow-hidden rounded-xl">
+              <img src="img/gallery/equipo_sonido.jpg" alt="Equipo de sonido"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOCATION ASSISTANT -->
+    <div id="location" class="flex w-full justify-center bg-background-light py-16">
+      <div class="px-4 md:px-10 lg:px-20 flex flex-1 justify-center">
+        <div
+          class="flex flex-col max-w-[960px] flex-1 bg-white rounded-2xl shadow-sm border border-[#cfe7d7] overflow-hidden">
+          <div class="bg-surface-dark p-8 md:p-10 text-center">
+            <h2 class="text-white text-3xl font-bold mb-4">Explora el Área del Campamento</h2>
+            <p class="text-gray-300 max-w-xl mx-auto mb-8">
+              Pregunta a nuestro asistente de IA sobre senderos, restaurantes o direcciones cerca del campamento.
+              Impulsado por datos de Google Maps.
+            </p>
+
+            <form id="location-form" class="relative max-w-lg mx-auto">
+              <input type="text" id="location-query" placeholder="Ej: ¿Qué rutas de senderismo hay cerca?"
+                class="w-full h-14 pl-6 pr-14 rounded-full border-none focus:ring-2 focus:ring-primary shadow-lg text-text-main text-base" />
+              <button type="submit"
+                class="absolute right-2 top-2 h-10 w-10 bg-primary rounded-full flex items-center justify-center text-text-main hover:brightness-110 transition-all disabled:opacity-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="lucide lucide-send">
+                  <path d="m22 2-7 20-4-9-9-4Z" />
+                  <path d="M22 2 11 13" />
+                </svg>
+              </button>
+            </form>
+          </div>
+
+          <div id="location-results" class="p-8 md:p-10 animate-fade-in hidden">
+            <!-- Results will be injected here -->
+          </div>
+
+          <!-- Google Maps Section -->
+          <div class="p-0">
+            <div class="w-full h-[450px] relative">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d830.5399635996815!2d-70.7390039!3d19.4057283!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eb1c922c1a1d8bf%3A0xbc0d497a63e814d0!2sMinisterio%20Puertas%20De%20Alabanza%20Y%20Adoracion%2C%20Inc.%20(MPAA)!5e1!3m2!1ses-419!2sdo!4v1767967841733!5m2!1ses-419!2sdo"
+                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade" class="rounded-b-2xl">
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-surface-light border-t border-[#e7f3eb] pt-16 pb-8">
+    <div class="flex justify-center w-full">
+      <div class="px-4 md:px-10 lg:px-20 flex flex-1 flex-col max-w-[960px]">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+
+          <!-- Brand Column -->
+          <div class="flex flex-col gap-4 col-span-1 md:col-span-2">
+            <div class="flex items-center gap-2 text-text-main">
+              <div class="w-6 h-6 text-primary">
+                <svg class="w-full h-full" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M24 4L6 44H42L24 4Z" fill="currentColor"></path>
+                </svg>
+              </div>
+              <h2 class="text-lg font-bold">Camp CCB</h2>
+            </div>
+            <p class="text-gray-500 text-sm max-w-xs leading-relaxed">
+              Creando la próxima generación de líderes a través de la aventura, comunidad y diversión. ¡Únete este
+              verano!
+            </p>
+          </div>
+
+          <!-- Navigation Column -->
+          <div class="flex flex-col gap-3">
+            <h4 class="font-bold text-text-main">Navegación</h4>
+            <a href="#" class="text-gray-500 text-sm hover:text-primary transition-colors">Inicio</a>
+            <a href="#" class="text-gray-500 text-sm hover:text-primary transition-colors">Nosotros</a>
+            <a href="#" class="text-gray-500 text-sm hover:text-primary transition-colors">Seguridad</a>
+            <a href="#" class="text-gray-500 text-sm hover:text-primary transition-colors">Preguntas Frecuentes</a>
+          </div>
+
+          <!-- Contact Column -->
+          <div class="flex flex-col gap-3">
+            <h4 class="font-bold text-text-main">Contacto</h4>
+            <div
+              class="flex items-center gap-2 text-gray-500 text-sm hover:text-primary transition-colors cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-mail">
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+              </svg>
+              hello@camp2024.com
+            </div>
+            <div
+              class="flex items-center gap-2 text-gray-500 text-sm hover:text-primary transition-colors cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-phone">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              +1 (555) 123-4567
+            </div>
+            <div
+              class="flex items-center gap-2 text-gray-500 text-sm hover:text-primary transition-colors cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-map-pin">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Camp Lakota, CA
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="border-t border-[#e7f3eb] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p class="text-gray-400 text-xs">© 2024 Camp Organization. All rights reserved.</p>
+          <div class="flex gap-4">
+            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+              <span class="sr-only">Facebook</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-facebook">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+              <span class="sr-only">Instagram</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-instagram">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/script.js"></script>
+</body>
+
+</html>

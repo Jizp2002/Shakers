@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Payment - Camp CCB</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&family=Noto+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#13ec5b",
+                        "primary-dark": "#0fb846",
+                        "background-light": "#f6f8f6",
+                        "surface-light": "#ffffff",
+                        "text-main": "#0d1b12",
+                    },
+                    fontFamily: {
+                        display: ["Plus Jakarta Sans", "sans-serif"],
+                        body: ["Noto Sans", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light text-text-main antialiased min-h-screen flex flex-col">
+
+    <header class="w-full bg-white border-b border-gray-100 py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 group">
+                <span class="font-bold text-lg tracking-tight">Camp CCB</span>
+            </a>
+            <a href="index.html" class="text-sm font-medium text-gray-500 hover:text-primary">Inicio</a>
+        </div>
+    </header>
+
+    <main class="flex-1 flex justify-center py-10 px-4">
+        <div
+            class="w-full max-w-lg bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+
+            <div class="bg-surface-light p-8 border-b border-gray-100 text-center">
+                <h1 class="text-2xl font-bold mb-2">Verificar Pago</h1>
+                <p class="text-gray-500 text-sm">Ingresa tu código de registro para subir tu comprobante.</p>
+            </div>
+
+            <div class="p-8 flex flex-col gap-6">
+
+                <!-- STEP 1: Identification -->
+                <div id="search-section" class="flex flex-col gap-4">
+                    <div class="flex gap-2">
+                        <input type="text" id="reg-code"
+                            class="flex-1 rounded-lg border-gray-300 border p-3 uppercase font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            placeholder="CAMP2025-XXXX">
+                        <button id="search-btn"
+                            class="px-6 rounded-lg bg-primary text-text-main font-bold hover:brightness-110 transition-colors">
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Upload Form (Hidden initially) -->
+                <div id="upload-section" class="hidden flex-col gap-6 animate-fade-in">
+
+                    <!-- Participant Summary -->
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs text-blue-400 font-bold uppercase tracking-wider">Participant</p>
+                                <p id="p-name" class="font-bold text-blue-900 text-lg">Loading...</p>
+                                <p id="p-email" class="text-sm text-blue-700">...</p>
+                            </div>
+                            <span id="p-status"
+                                class="px-2 py-1 bg-white rounded text-xs font-bold text-blue-600 border border-blue-100">Pending</span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Instructions -->
+                    <div class="border-t border-b border-gray-100 py-4">
+                        <div>
+                            <h3 class="font-bold text-lg mb-4">Detalles de Pago</h3>
+                            <div
+                                class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex flex-col gap-4 text-sm text-gray-600 mb-4">
+                                <p class="text-xs text-center text-gray-500 italic mb-2">Realiza la transferencia o
+                                    depósito a una de las siguientes cuentas:</p>
+
+                                <div class="flex flex-col gap-1 border-b border-gray-200 pb-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Banco:</span>
+                                        <span class="font-bold text-gray-900 text-right">Banco Popular</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Cuenta Ahorros:</span>
+                                        <span
+                                            class="font-bold text-gray-900 font-mono text-right select-all">754461101</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Titular:</span>
+                                        <span class="font-bold text-gray-900 text-right">Vinkgrid Paredes de
+                                            Zabala</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col gap-1 border-b border-gray-200 pb-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Banco:</span>
+                                        <span class="font-bold text-gray-900 text-right">BHD</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-medium">Cuenta Ahorros:</span>
+                                        <span
+                                            class="font-bold text-gray-900 font-mono text-right select-all">25276980019</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center pt-1">
+                                    <span class="font-medium">Monto Total:</span>
+                                    <span class="font-bold text-primary text-lg"
+                                        id="payment-amount-display">Cargando...</span>
+                                </div>
+                            </div>
+
+                            <form id="payment-form" class="flex flex-col gap-4">
+                                <input type="hidden" id="p-id" name="participante_id">
+
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-sm font-bold text-gray-700">Método de Pago</label>
+                                    <select name="metodo_pago" required
+                                        class="w-full rounded-lg border-gray-300 border p-3 bg-white">
+                                        <option value="transferencia">Transferencia Bancaria</option>
+                                        <option value="deposito">Depósito Efectivo</option>
+                                    </select>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-sm font-bold text-gray-700">Referencia / No. Comprobante</label>
+                                    <input type="text" name="referencia_pago" required
+                                        class="w-full rounded-lg border-gray-300 border p-3" placeholder="Ej: 892312">
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-sm font-bold text-gray-700">Comprobante (Foto/PDF)</label>
+                                    <div
+                                        class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer relative">
+                                        <input type="file" id="file-upload" accept="image/*,.pdf"
+                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                        <div id="upload-placeholder"
+                                            class="flex flex-col items-center gap-2 text-gray-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-upload-cloud">
+                                                <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+                                                <path d="M12 12v9" />
+                                                <path d="m16 16-4-4-4 4" />
+                                            </svg>
+                                            <span class="text-xs">Clic para subir archivo</span>
+                                        </div>
+                                        <div id="file-preview"
+                                            class="hidden flex items-center justify-center gap-2 text-primary font-bold text-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-check-circle">
+                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                                <polyline points="22 4 12 14.01 9 11.01" />
+                                            </svg>
+                                            <span id="file-name" class="truncate max-w-[200px]"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" id="submit-payment"
+                                    class="w-full py-3 bg-primary text-text-main font-bold rounded-xl hover:brightness-110 transition-all shadow-lg shadow-green-200">
+                                    Enviar Verificación
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success State -->
+                <div id="success-message" class="hidden flex-col items-center text-center py-10 animate-fade-in">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6 text-primary">
+                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-text-main mb-2">Receipt Received!</h2>
+                    <p class="text-gray-500 max-w-xs mx-auto mb-8">
+                        We will review your payment shortly. You will receive an email once it is verified.
+                    </p>
+                    <a href="index.html"
+                        class="px-8 py-2 rounded-lg border border-gray-300 font-bold hover:bg-gray-50">Back to Home</a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/verificar.js"></script>
+</body>
+
+</html>

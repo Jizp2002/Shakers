@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration - Camp CCB</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&family=Noto+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#13ec5b",
+                        "primary-dark": "#0fb846",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                        "surface-light": "#ffffff",
+                        "text-main": "#0d1b12",
+                    },
+                    fontFamily: {
+                        display: ["Plus Jakarta Sans", "sans-serif"],
+                        body: ["Noto Sans", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Hide scrollbar for step transitions if needed */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: flex;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-light text-text-main antialiased min-h-screen flex flex-col">
+
+    <!-- Navbar Simplified -->
+    <header class="w-full bg-white border-b border-gray-100 py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 group">
+                <div class="w-8 h-8 text-primary group-hover:scale-110 transition-transform">
+                    <svg class="w-full h-full" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 4L6 44H42L24 4Z" fill="currentColor"></path>
+                    </svg>
+                </div>
+                <span class="font-bold text-lg tracking-tight">Camp CCB</span>
+            </a>
+            <a href="index.html" class="text-sm font-medium text-gray-500 hover:text-primary">Cancel & Exit</a>
+        </div>
+    </header>
+
+    <main class="flex-1 flex justify-center py-10 px-4">
+        <div
+            class="w-full max-w-2xl bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+
+            <!-- Header & Progress -->
+            <div class="bg-surface-light p-8 border-b border-gray-100">
+                <h1 class="text-2xl font-bold text-center mb-6">Camp Registration</h1>
+
+                <div class="relative">
+                    <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-green-100">
+                        <div id="progress-bar" style="width: 33%"
+                            class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary transition-all duration-500">
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
+                        <span id="step-label-1" class="text-primary transition-colors">Personal</span>
+                        <span id="step-label-2" class="transition-colors">Salud</span>
+                        <span id="step-label-3" class="transition-colors">Emergencia</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="registration-form" class="flex-1 p-8 flex flex-col gap-6">
+
+                <!-- STEP 1: Personal Data -->
+                <div id="step-1" class="step-panel active flex-col gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-sm font-bold text-gray-700">Nombre *</label>
+                            <input type="text" name="nombres" required
+                                class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="Juan">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-sm font-bold text-gray-700">Apellidos *</label>
+                            <input type="text" name="apellidos" required
+                                class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="Pérez">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-sm font-bold text-gray-700">Fecha de Nacimiento *</label>
+                            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" required
+                                class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <p id="age-display" class="text-xs text-gray-500 mt-1 h-4"></p>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-sm font-bold text-gray-700">Género *</label>
+                            <div class="flex gap-4 p-3 bg-gray-50 rounded-lg">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="sexo" value="M" required
+                                        class="text-primary focus:ring-primary"> Masculino
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="sexo" value="F" required
+                                        class="text-primary focus:ring-primary"> Femenino
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Correo Electrónico *</label>
+                        <input type="email" name="email" id="email" required
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            placeholder="juan@ejemplo.com">
+                        <p id="email-error" class="text-xs text-red-500 hidden">Este correo ya está registrado.</p>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Teléfono *</label>
+                        <input type="tel" name="telefono" required
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            placeholder="(555) 123-4567">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Dirección</label>
+                        <input type="text" name="direccion"
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            placeholder="Calle Principal 123">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Iglesia / Organización</label>
+                        <input type="text" name="iglesia"
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            placeholder="Opcional">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Preferencia de Habitación (Adicional)</label>
+                        <select name="tipo_habitacion" id="tipo_habitacion"
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                            <option value="estandar">Estándar (Incluida)</option>
+                            <option value="pareja">Habitación Privada Pareja (+$1,500)</option>
+                            <option value="familia">Habitación Privada Familia (+$1,800)</option>
+                        </select>
+                        <p class="text-xs text-gray-500">La habitación estándar viene incluida en el precio base.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mt-2">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-500 font-bold text-sm">Precio Base (Estimado)</span>
+                            <span id="base-fee-display" class="font-bold text-gray-900">$6,000</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-500 font-bold text-sm">Adicional Habitación</span>
+                            <span id="room-fee-display" class="font-bold text-gray-900">$0</span>
+                        </div>
+                        <div class="border-t border-gray-200 pt-2 flex justify-between items-center">
+                            <span class="text-primary font-black text-lg">Total</span>
+                            <span id="total-fee-display" class="text-primary font-black text-xl">$6,000</span>
+                        </div>
+                    </div>
+                </div> <!-- End step-1 -->
+
+                <!-- STEP 2: Health Info -->
+                <div id="step-2" class="step-panel flex-col gap-6">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Tipo de Sangre</label>
+                        <select name="tipo_sangre"
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                            <option value="">Desconocido</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Alergias</label>
+                        <textarea name="alergias" rows="2"
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            placeholder="Cacahuetes, Penicilina, etc. (Dejar en blanco si no aplica)"></textarea>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Medicamentos Actuales</label>
+                        <textarea name="medicamentos" rows="2"
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            placeholder="Listar cualquier medicamento que esté tomando..."></textarea>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Condiciones Médicas</label>
+                        <textarea name="condiciones_medicas" rows="2"
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            placeholder="Asma, Diabetes, etc."></textarea>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Emergency Contact -->
+                <div id="step-3" class="step-panel flex-col gap-6">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-800 mb-2">
+                        <p>Por favor, proporcione un contacto que esté disponible durante las fechas del campamento.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Nombre Contacto Emergencia *</label>
+                        <input type="text" name="nombre_emergencia" required
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Teléfono Emergencia *</label>
+                        <input type="tel" name="telefono_emergencia" id="telefono_emergencia" required
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <p id="phone-error" class="text-xs text-red-500 hidden">El teléfono de emergencia debe ser
+                            diferente al
+                            personal.</p>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="text-sm font-bold text-gray-700">Relación *</label>
+                        <select name="relacion_emergencia" required
+                            class="w-full rounded-lg border-gray-300 border p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                            <option value="Mother">Madre</option>
+                            <option value="Father">Padre</option>
+                            <option value="Sibling">Hermano/a</option>
+                            <option value="Grandparent">Abuelo/a</option>
+                            <option value="Uncle/Aunt">Tío/a</option>
+                            <option value="Other">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-4 flex items-start gap-3">
+                        <input type="checkbox" required
+                            class="mt-1 w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
+                        <p class="text-sm text-gray-600">Confirmo que toda la información es correcta y acepto los
+                            términos y
+                            condiciones.</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between mt-8 pt-4 border-t border-gray-100 gap-4">
+                    <button type="button" id="prev-btn"
+                        class="hidden flex-1 md:flex-none px-6 py-3 rounded-lg border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-colors text-center">
+                        Atrás
+                    </button>
+                    <div class="hidden md:block flex-1"></div>
+                    <button type="button" id="next-btn"
+                        class="flex-1 md:flex-none px-8 py-3 rounded-lg bg-primary text-text-main font-bold hover:brightness-110 transition-colors shadow-lg shadow-green-200 text-center">
+                        Siguiente
+                    </button>
+                    <button type="submit" id="submit-btn"
+                        class="hidden flex-1 md:flex-none px-8 py-3 rounded-lg bg-primary text-text-main font-bold hover:brightness-110 transition-colors shadow-lg shadow-green-200 text-center">
+                        Finalizar Registro
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 opacity-0 transition-all duration-300"
+            id="modal-content">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
+                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-black text-center text-text-main mb-2">¡Registro Exitoso!</h2>
+            <p class="text-gray-500 text-center mb-6">Tu cupo ha sido reservado correctamente.</p>
+
+            <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100 text-center">
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Tu Código de Registro</p>
+                <p id="generated-code" class="text-3xl font-black text-primary font-mono tracking-wider">CARGANDO...</p>
+            </div>
+
+            <p class="text-sm text-gray-600 text-center mb-8">
+                Por favor procede a la verificación de pago para confirmar tu asistencia. Hemos enviado un correo con
+                estos detalles.
+            </p>
+
+            <div class="flex flex-col gap-3">
+                <a href="verificar-pago.html" id="modal-payment-link"
+                    class="w-full py-3 bg-primary text-text-main font-bold rounded-xl text-center hover:brightness-105 transition-all">
+                    Subir Comprobante de Pago
+                </a>
+                <a href="index.html" class="w-full py-3 text-gray-500 font-bold text-center hover:text-gray-700">
+                    Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/registro.js"></script>
+</body>
+
+</html>
