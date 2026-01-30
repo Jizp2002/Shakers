@@ -132,9 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const participantId = pIdInput.value;
             const now = new Date();
             const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const year = now.getFullYear();
             // Clean filename
             const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
-            const filePath = `2025/${month}/${participantId}/${Date.now()}_${cleanName}`;
+            const filePath = `${year}/${month}/${participantId}/${Date.now()}_${cleanName}`;
 
             // 1. Upload File
             const { data: uploadData, error: uploadError } = await supabase.storage

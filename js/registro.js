@@ -241,13 +241,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Supabase no está configurado. Por favor contacta al administrador.');
             }
 
-            const { data, error } = await supabase
-                .from('participantes')
-                .insert([dataObj])
-                .select()
-                .single();
+            // Use RPC to avoid RLS issues with public inserts
+            const { data, error } = await supabase.rpc('registrar_participante', {
+                p_nombres: dataObj.nombres,
+                p_apellidos: dataObj.apellidos,
+                p_email: dataObj.email,
+                p_telefono: dataObj.telefono,
+                p_fecha_nacimiento: dataObj.fecha_nacimiento,
+                p_sexo: dataObj.sexo,
+                p_direccion: dataObj.direccion,
+                p_iglesia: dataObj.iglesia,
+                p_tipo_habitacion: dataObj.tipo_habitacion,
+                p_talla_camisa: dataObj.talla_camisa,
+                p_tipo_sangre: dataObj.tipo_sangre,
+                p_alergias: dataObj.alergias,
+                p_medicamentos: dataObj.medicamentos,
+                p_condiciones_medicas: dataObj.condiciones_medicas,
+                p_nombre_emergencia: dataObj.nombre_emergencia,
+                p_telefono_emergencia: dataObj.telefono_emergencia,
+                p_relacion_emergencia: dataObj.relacion_emergencia,
+                p_monto_a_pagar: dataObj.monto_a_pagar,
+                p_edad: dataObj.edad
+            });
 
             if (error) throw error;
+
+            // Trigger Email (Edge Function)
+            try {
+                const { error: funcError } = await supabase.functions.invoke('enviar-email-confirmacion', {
+                    body: { record: data }
+                });
+                if (funcError) console.warn('Email function warning:', funcError);
+            } catch (err) {
+                console.warn('Failed to invoke email function:', err);
+            }
 
             // Success
             showSuccessModal(data.codigo_registro);
